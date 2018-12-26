@@ -1,0 +1,41 @@
+---
+# - debug:
+#     msg: "{{ ansible_mounts }}"
+
+- name: Make sure SD Card partitions are unmounted
+  shell: >
+    umount "{{ item.device }}"
+  when: "{{ item.device | match(raspbian_sdcard ~ '.*') }}"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Copy the Raspbian image on the SD Card
+  shell: >
+    dd bs=4M if={{ role_path }}/files/{{ raspbian_img }} of={{ raspbian_sdcard }}
+  tags:   format
+
+- name: Make sure SD Card partitions are mounted
+  mount:
+    state: mounted
+    src: "{{ item.device }}"
+    name: "/mnt{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options | default(omit) }}"
+  when: "{{ item.device | match(raspbian_sdcard ~ '.*') }}"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Override the content of cmdline.txt
+  template:
+    src: cmdline.txt.j2
+    dest: "/mnt{{ item.device }}/cmdline.txt"
+  when: "{{ item.device | match(raspbian_sdcard ~ 'p1') }}"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Make sure SD Card partitions are unmounted
+  mount:
+    state: absent
+    src: "{{ item.device }}"
+    name: "/mnt{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.options | default(omit) }}"
+  when: "{{ item.device | match(raspbian_sdcard ~ '.*') }}"
+  with_items: "{{ ansible_mounts }}"

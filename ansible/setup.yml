@@ -1,0 +1,7 @@
+- name: Configure local iptable rules to share public internet connection with private LAN
+  hosts: rpi
+  become: True
+  
+  roles:
+    - { role: common }
+    - { role: docker }

@@ -1,0 +1,17 @@
+---
+# defaults file for raspbian
+raspbian_img: '2016-03-18-raspbian-jessie-lite.img'
+
+raspbian_sdcard: '/dev/mmcblk0'
+
+raspbian_cmdline_common: 'dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root={{ raspbian_sdcard }}p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait'
+
+raspbian_client_ip: 192.168.111.101
+
+raspbian_networking:
+  ip: "{{ raspbian_client_ip }}"
+  netmask: 255.255.255.0
+  gateway: 192.168.111.1
+  device: eth0
+  hostname:  "rpi-{{ raspbian_client_ip | replace('.','-') }}"
+  autoconf: 'off'

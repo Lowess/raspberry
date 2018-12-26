@@ -1,0 +1,9 @@
+---
+######################################################################
+- name: Flash the Micro USB to put Rapbian OS on it
+  hosts: localhost
+  connection: local
+  become: yes
+
+  roles:
+    - raspbian

@@ -1,0 +1,3 @@
+---
+docker_ppa: "deb [arch=armhf] https://apt.dockerproject.org/repo raspbian-{{ ansible_distribution_release | lower }} main"
+
